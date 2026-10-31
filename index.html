@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora de Ahorro</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #e8f5e9; padding: 20px; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
+    .card { background: white; padding: 30px 20px; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); width: 100%; max-width: 350px; text-align: center; }
+    h2 { margin-top: 0; color: #2e7d32; }
+    input { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box; font-size: 16px; }
+    button { width: 100%; padding: 14px; background: #2e7d32; color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; margin-top: 10px; cursor: pointer; }
+    button:active { background: #1b5e20; }
+    #resultado { margin-top: 25px; display: none; padding: 15px; background: #f1f8e9; border-radius: 8px; border: 1px solid #c5e1a5; }
+    .numero { font-size: 32px; font-weight: bold; color: #2e7d32; margin: 10px 0; }
+  </style>
+</head>
+<body>
+
+  <div class="card">
+    <h2>Meta de Ahorro</h2>
+    
+    <input type="number" id="meta" placeholder="¿Cuánto quieres ahorrar? ($)">
+    <input type="number" id="actual" placeholder="¿Cuánto tienes ahorrado? ($)">
+    <input type="number" id="ahorroMensual" placeholder="¿Cuánto ahorras al mes? ($)">
+    
+    <button onclick="calcular()">Calcular Tiempo</button>
+    
+    <div id="resultado">
+      <div>Te tomará aproximadamente:</div>
+      <div class="numero" id="num-meses">--</div>
+      <div>meses lograrlo.</div>
+    </div>
+  </div>
+
+  <script>
+    async function calcular() {
+      const meta = document.getElementById('meta').value;
+      const actual = document.getElementById('actual').value;
+      const ahorroMensual = document.getElementById('ahorroMensual').value;
+      
+      if (!meta || !actual || !ahorroMensual) {
+        alert("Por favor, llena todos los campos.");
+        return;
+      }
+
+      document.getElementById('resultado').style.display = 'block';
+      document.getElementById('num-meses').innerText = "...";
+
+      const urlNetlify = 'https://TU-SITIO-AQUI.netlify.app/.netlify/functions/calcular-ahorro';
+
+      try {
+        const respuesta = await fetch(urlNetlify, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ meta, actual, ahorroMensual })
+        });
+        
+        const datos = await respuesta.json();
+        document.getElementById('num-meses').innerText = datos.meses;
+        
+      } catch (error) {
+        document.getElementById('num-meses').innerText = "Error";
+        alert("No hay conexión con el servidor.");
+      }
+    }
+  </script>
+</body>
+</html>
