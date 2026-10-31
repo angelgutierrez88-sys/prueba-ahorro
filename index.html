@@ -53,7 +53,11 @@
         const respuesta = await fetch(urlNetlify, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ meta, actual, ahorroMensual })
+          body: JSON.stringify({ 
+            meta: Number(meta), 
+            actual: Number(actual), 
+            ahorroMensual: Number(ahorroMensual) 
+          })
         });
         
         const datos = await respuesta.json();
